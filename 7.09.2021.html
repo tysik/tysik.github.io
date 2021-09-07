@@ -3,10 +3,8 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title></title>
+        <title>Project organization (7.09.2021) - Let&#x27;s practice some C++!</title>
         
-        
-        <base href="/">
         
 
 
@@ -97,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start</a></li><li class="chapter-item expanded "><a href="5.09.2021.html"><strong aria-hidden="true">1.</strong> Introduction (5.09.2021)</a></li><li class="chapter-item expanded "><a href="7.09.2021.html"><strong aria-hidden="true">2.</strong> Project organization (7.09.2021)</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start</a></li><li class="chapter-item expanded "><a href="5.09.2021.html"><strong aria-hidden="true">1.</strong> Introduction (5.09.2021)</a></li><li class="chapter-item expanded "><a href="7.09.2021.html" class="active"><strong aria-hidden="true">2.</strong> Project organization (7.09.2021)</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -165,13 +163,96 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#document-not-found-404" id="document-not-found-404">Document not found (404)</a></h1>
-<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
+                        <h1><a class="header" href="#lets-go" id="lets-go">Let's go!</a></h1>
+<p>Let's start with some basic organization of a project. We will call it &quot;Stack Containers&quot; - seems to be clear and simple. At first, let's prepare some directories. For directories and non-source files I like to use kebab-case notation. It's kinda easy to read.</p>
+<pre><code class="language-bash">$ mkdir stack-containers
+$ cd stack-containers
+</code></pre>
+<p>For sure we will have some source files and some tests. I think the implementation will be header only (since the containers are going to use templates) so there is no need for a separate include folder (which I would normally add).</p>
+<pre><code class="language-bash">$ mkdir source
+$ mkdir test
+</code></pre>
+<p>Since we are using CMake, let's add a configuration file.</p>
+<pre><code class="language-bash">$ touch CMakeLists.txt
+$ code CMakeLists.txt
+</code></pre>
+<p>First, let's configure CMake, project name, and C++ specific information. We specify that we want to use standard C++17 and we pass some additional flags for the compiler: turn on all standard warnings (-Wall), turn on additional warnings (-Wextra), turn every warning into an error (-Werror), and also... turn on more warnings! (-pedantic)</p>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.16)
+project(&quot;Stack Containers&quot; CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS &quot;${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pedantic&quot;)
+</code></pre>
+<p>We could probably use older version of CMake but that's the one that I've got so let's keep it. I also really don't understand why do they use variable names with <code>CXX</code> instead of <code>CPP</code>. Oh well... The header files will be kept in <code>source</code> folder, so let's notify CMake about where to look for them.</p>
+<pre><code class="language-cmake">include_directories(source)
+</code></pre>
+<p>As I promised - I will follow TDD rules. Let's start with tests. CMake has a nice feature called CTest which is helpful to distinguish compiled tests from other binaries. CMake also comes with a function <code>add_test</code> which is not so useful on its own but with a couple of helper functions it will do the job. Let's see.</p>
+<pre><code class="language-cmake">function(target_output_directory binary dir)
+  set_target_properties(${binary} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${dir})
+endfunction()
+
+function(add_new_test target)
+  add_executable(${target} ${ARGN})
+  target_output_directory(${target} tests)
+  add_test(${target} tests/${target})
+endfunction()
+</code></pre>
+<p>The CMake function declaration is somewhat awkward. First you use <code>function</code> keyword, then you pass its name as argument of function <code>function</code>, then you pass recognizable parameters of that function. In our case we declared two helper functions: <code>target_output_directory</code> - which job is to change the path where the binary <code>target</code> will go, and <code>add_new_test</code> - which is more complicated. First, it adds executable target that will be build from any source files passed as additional arguments to function <code>add_new_test</code>. Then, with a help of previous helper function, it changes the default output path to <code>test</code> directory (it is not directory with test source files but rather out-of-build test directory for binaries). In the end the function marks newly created test binary as a testable entity. Huh!</p>
+<p>Now let's add our first test.</p>
+<pre><code class="language-cmake">include(CTest)
+enable_testing()
+if(BUILD_TESTING)
+  add_new_test(array-test test/ArrayTest.cpp)
+endif()
+</code></pre>
+<p>We need to include CTest in order to easily turn on/off compilation of test and testing itself. <code>BUILD_TESTING</code> is set to <code>true</code> by default but we can still disable it by passing <code>-DBUILD_TESTING=false</code> argument to CMake. Let's add a dummy source file for our test.</p>
+<pre><code class="language-bash">$ echo &quot;int main() { return 0; }&quot; &gt; test/ArrayTest.cpp
+</code></pre>
+<p>Now let's try to build it. Remember to <strong>always</strong> do out of source builds. You don't want to clutter your beautiful code and project layout with some compile-time garbage!</p>
+<pre><code class="language-bash">$ mkdir build
+$ cd build
+$ cmake ..
+</code></pre>
+<p>After that I received the following output.</p>
+<pre><code class="language-bash">-- The CXX compiler identification is GNU 9.3.0
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/tysik/Workspace/cpp/stack-containers/build
+</code></pre>
+<p>And now it's time for <code>make</code>!</p>
+<pre><code class="language-bash">$ make
+Scanning dependencies of target array-test
+[ 50%] Building CXX object CMakeFiles/array-test.dir/test/ArrayTest.cpp.o
+[100%] Linking CXX executable tests/array-test
+[100%] Built target array-test
+</code></pre>
+<p>Can we run the test? Sure we can!</p>
+<pre><code class="language-bash">$ make test
+Running tests...
+Test project /home/tysik/Workspace/cpp/stack-containers/build
+    Start 1: array-test
+1/1 Test #1: array-test .......................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+</code></pre>
+<p>That's it for now. We will prepare some real test suites in a near future. Until next time - farewell!</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="5.09.2021.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
                         
 
                         
@@ -182,6 +263,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="5.09.2021.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
                 
 
                 

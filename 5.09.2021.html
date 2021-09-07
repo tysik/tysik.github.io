@@ -3,10 +3,8 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title></title>
+        <title>Introduction (5.09.2021) - Let&#x27;s practice some C++!</title>
         
-        
-        <base href="/">
         
 
 
@@ -97,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start</a></li><li class="chapter-item expanded "><a href="5.09.2021.html"><strong aria-hidden="true">1.</strong> Introduction (5.09.2021)</a></li><li class="chapter-item expanded "><a href="7.09.2021.html"><strong aria-hidden="true">2.</strong> Project organization (7.09.2021)</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start</a></li><li class="chapter-item expanded "><a href="5.09.2021.html" class="active"><strong aria-hidden="true">1.</strong> Introduction (5.09.2021)</a></li><li class="chapter-item expanded "><a href="7.09.2021.html"><strong aria-hidden="true">2.</strong> Project organization (7.09.2021)</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -165,15 +163,45 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#document-not-found-404" id="document-not-found-404">Document not found (404)</a></h1>
-<p>This URL is invalid, sorry. Please use the navigation bar or search to continue.</p>
+                        <h1><a class="header" href="#whats-up" id="whats-up">What's up?</a></h1>
+<p>Some time ago I realized that my C++ skills have somehow rotten and decided that I will do something about it. And here we go. I decided that I will implement something simple but while doing it, I will use modern tools and methodologies (techniques, if you will) for C++. C++20 is out there but I would like to update my skills step-by-step - I will stick with C++17.</p>
+<p>I decided that the &quot;thing&quot; which I shall implement will be a collection of generic containers which store their elements on the stack. I will try to keep it as independent from std as possible (so that it can be used in bare-metal projects). I will thrive for keeping everything constexpr and noexcept - which I trully like. Perhaps I will make the containers compliant with std algorithms but that is an option. Since the data will be stored on stack they will not be movable.</p>
+<p>The containers I would like to implement are:</p>
+<ol>
+<li>Array - collection of N items - you cannot add or remove them - you can only change their values.</li>
+<li>Stack - collection of 0 to N items - you can only add onto or remove from the top of the stack.</li>
+<li>Wheel - circular buffer - collection of 0 to N items - adding N+1'th element overrides the 1'st element and so on.</li>
+<li>Queue - collection of 0 to N items - it's easy to add elements at the end and easy to remove elements at the front.</li>
+<li>Set - collection of ordered 0 to N items without duplications.</li>
+<li>Chain - double linked list - collection of 0 to N items - it's easy to insert or remove at any place but in order to find specific element it needs to be traversed.</li>
+<li>[optional] Map - collection of 0 to N key-value pairs.</li>
+</ol>
+<p>Huh! That's a lot of code to be written! Perhaps the task is simple but that does not mean it will be easy. There are couple of tools I would like to exploit during the process:</p>
+<ol>
+<li>CMake - I am a big fan of CMake but I haven't used it in a while so it's time to update my knowledge.</li>
+<li>Conan - I was super excitet about cargo package manager for Rust lang - let's see what does C++ community have to offer.</li>
+<li>GoogleTest + GoogleMock - it's about time to invest some points in auto testing skills!</li>
+<li>clang-format - yeah - I like the code to be pretty.</li>
+<li>Git - but of course! I am currently condemned to SVN and I would love to see the add/commit/push trio again!</li>
+</ol>
+<p>Above all of that I will try to do my best in keeping up with TDD (Test Driven Development). Although in case of simple tasks, the fingers are just screaming to go straight for the implementation, I will patiently try to think about examples (and interfaces) first.</p>
+<p>I write code in Visual Studio Code on Ubuntu. I'm a big fan of VS Code but Ubuntu is starting to annoy me (e.g. with dummy notifications that my file browser has been successfully opened - surprise!) so it might change to Arch during the process. I compile with g++ 9.3 and use cmake 3.16.</p>
+<p>That's it for now. Until next time - farewell!</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
+                        
+                            <a rel="next" href="7.09.2021.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -183,7 +211,15 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a rel="prev" href="index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
+                
+                    <a rel="next" href="7.09.2021.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 
