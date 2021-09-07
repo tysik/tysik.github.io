@@ -1,3 +1,9 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: home
+---
 # What's up?
 
 Some time ago I realized that my C++ skills have somehow rotten and decided that I will do something about it. And here we go. I decided that I will implement something simple but while doing it, I will use modern tools and methodologies (techniques, if you will) for C++.
